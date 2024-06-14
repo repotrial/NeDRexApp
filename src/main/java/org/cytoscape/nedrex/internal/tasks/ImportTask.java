@@ -8,10 +8,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
-import org.cytoscape.nedrex.internal.DownloadNetworkTask;
-import org.cytoscape.nedrex.internal.ImportNetworkTask;
-import org.cytoscape.nedrex.internal.NeDRexService;
-import org.cytoscape.nedrex.internal.RepoApplication;
+import org.cytoscape.nedrex.internal.*;
 import org.cytoscape.nedrex.internal.ui.SearchOptionPanel;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskIterator;
@@ -28,8 +25,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * NeDRex App
@@ -88,6 +85,7 @@ public class ImportTask extends AbstractTask {
             taskMonitor.setStatusMessage("Processing your request...");
 
             edges = optionsPanel.getSelectedEdgeTypes();
+            List<InteractionType> edgeTypes = optionsPanel.getSelectedEdgeTypeObjects();
             List<String> iidEvids = optionsPanel.getIIDevidence();
             List<String> drugGroups = optionsPanel.getSelectedDrugGroups();
             Boolean ppiSL = optionsPanel.getSelfLoop();
@@ -102,20 +100,48 @@ public class ImportTask extends AbstractTask {
 
             Boolean concise = optionsPanel.conciseVersion();
             logger.info("The option selected for concise: " + concise);
-            payload.put("nodes", nodes);
-            payload.put("edges", edges);
+
             payload.put("ppi_evidence", iidEvids);
             payload.put("ppi_self_loops", ppiSL);
-            payload.put("taxid", taxIDs);
+
             payload.put("concise", concise);
+            payload.put("include_omim", optionsPanel.includeOMIM());
+
             if (optionsPanel.includeDisGeNet()) {
                 payload.put("disgenet_threshold", optionsPanel.getThreshold());
             } else if (!optionsPanel.includeDisGeNet()) {
                 payload.put("disgenet_threshold", 2D);
             }
-            payload.put("include_omim", optionsPanel.includeOMIM());
-            payload.put("drug_groups", drugGroups);
+            HashSet<String> nodes_selected_by_edges = edgeTypes.stream().filter(e -> e.getSourceType() != null).map(e -> e.getSourceType().toString()).collect(Collectors.toCollection(HashSet::new));
+            nodes_selected_by_edges.addAll(edgeTypes.stream().filter(e -> e.getTargetType() != null).map(e -> e.getTargetType().toString()).collect(Collectors.toCollection(HashSet::new)));
+            nodes_selected_by_edges = nodes_selected_by_edges.stream().map(String::toLowerCase).collect(Collectors.toCollection(HashSet::new));
 
+            if (nodes_selected_by_edges.contains("protein")) {
+                payload.put("taxid", taxIDs);
+                if (!taxIDs.contains(-1)) {
+                    if (!nodes.contains("protein")) {
+                        nodes.add("protein");
+                    }
+                }
+                if (optionsPanel.reviewedProteins()) {
+                    payload.put("reviewed_proteins", Collections.singletonList(true));
+                    if (!nodes.contains("protein")) {
+                        nodes.add("protein");
+                    }
+                } else {
+                    payload.put("reviewed_proteins", Arrays.asList(true, false));
+                }
+            }
+
+            if (nodes_selected_by_edges.contains("drug")) {
+                payload.put("drug_groups", drugGroups);
+                if (!drugGroups.isEmpty() && !nodes.contains("drug")) {
+                    nodes.add("drug");
+                }
+            }
+
+            payload.put("nodes", nodes);
+            payload.put("edges", edges);
             logger.info("The post JSON converted to string: " + payload.toString());
 
             HttpPost post = new HttpPost(this.nedrexService.API_LINK + "graph/builder");
@@ -137,7 +163,7 @@ public class ImportTask extends AbstractTask {
                     logger.info("The uri of the response to the post: " + line + "\n");
                     uuid = line;
                 }
-                System.out.println(uuid);
+                System.out.println("UUID:" + uuid);
                 EntityUtils.consume(entity);
             } catch (ClientProtocolException e1) {
                 // TODO Auto-generated catch block

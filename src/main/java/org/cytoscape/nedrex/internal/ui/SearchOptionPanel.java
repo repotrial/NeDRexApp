@@ -38,6 +38,7 @@ public class SearchOptionPanel extends JPanel{
 	JCheckBox selfLoop;
 	JCheckBox iidEvid;
 	JCheckBox omim;
+	JCheckBox reviewedProteins;
 	JCheckBox disgenet;
 	JCheckBox concise;
 	JSlider disgenetScore;
@@ -60,6 +61,9 @@ public class SearchOptionPanel extends JPanel{
 		
 		JPanel additionalPPOptions = createAdditionalPPOptions();
 		add(additionalPPOptions, c.down().expandBoth().insets(7,5,0,5));
+
+		JPanel additionalPOptions = createAdditionalPOptions();
+		add(additionalPOptions, c.down().expandBoth().insets(7,5,0,5));
 		
 		JPanel additionalGDOptions = createAdditionalGDOptions();
 		add(additionalGDOptions, c.down().expandBoth().insets(7,5,0,5));
@@ -170,6 +174,21 @@ public class SearchOptionPanel extends JPanel{
             }
         });
 		
+		return additionalOptionPanel;
+	}
+
+	JPanel createAdditionalPOptions() {
+		JPanel additionalOptionPanel = new JPanel(new GridBagLayout());
+		additionalOptionPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		EasyGBC c = new EasyGBC();
+		JLabel optionsLabel = new JLabel("<html><b>Protein Options:</b></html>");
+		c.anchor("west").insets(0,5,0,5);
+		additionalOptionPanel.add(optionsLabel, c);
+
+		c.right().noExpand().insets(0,10,0,5);
+		reviewedProteins = new JCheckBox("reviewed_proteins", true);
+		reviewedProteins.setToolTipText("Uncheck if you want to exclude Proteins unreviewed in UniProt.");
+		additionalOptionPanel.add(reviewedProteins, c);
 		return additionalOptionPanel;
 	}
 	
@@ -499,6 +518,10 @@ public class SearchOptionPanel extends JPanel{
 	public Boolean includeOMIM() {
 		return omim.isSelected();
 	}
+
+	public Boolean reviewedProteins() {
+		return reviewedProteins.isSelected();
+	}
 	
 	public Boolean includeDisGeNet() {
 		return disgenet.isSelected();
@@ -530,6 +553,26 @@ public class SearchOptionPanel extends JPanel{
 			selEdgeType.add(InteractionType.drug_disease.getAPIname());
 		if (edgeTypeDD.isSelected())
 			selEdgeType.add(InteractionType.disease_is_disease.getAPIname());
+
+		return selEdgeType;
+	}
+
+	public List<InteractionType> getSelectedEdgeTypeObjects() {
+		List<InteractionType> selEdgeType = new ArrayList<>();
+		if (edgeTypeGD.isSelected())
+			selEdgeType.add(InteractionType.gene_disease);
+		if (edgeTypeGP.isSelected())
+			selEdgeType.add(InteractionType.gene_protein);
+		if (edgeTypePP.isSelected())
+			selEdgeType.add(InteractionType.protein_protein);
+		if (edgeTypeDrP.isSelected())
+			selEdgeType.add(InteractionType.drug_protein);
+		if (edgeTypePwP.isSelected())
+			selEdgeType.add(InteractionType.protein_pathway);
+		if (edgeTypeDrDis.isSelected())
+			selEdgeType.add(InteractionType.drug_disease);
+		if (edgeTypeDD.isSelected())
+			selEdgeType.add(InteractionType.disease_is_disease);
 
 		return selEdgeType;
 	}

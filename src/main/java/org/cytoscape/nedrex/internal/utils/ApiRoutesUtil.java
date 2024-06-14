@@ -293,7 +293,7 @@ public class ApiRoutesUtil {
         JSONObject payload = new JSONObject();
         Map<String, CyNode> protNamesMap = ModelUtil.getNodeNameMap(network, proteins);
         System.out.println("This is the protNamesMap: " + protNamesMap);
-        payload.put("nodes", new ArrayList<String>(protNamesMap.keySet()));
+        payload.put("nodes", new ArrayList<>(protNamesMap.keySet()));
 
         HttpPost request = new HttpPost();
         request.setURI(new URI(this.drugsTargetingProts_url));
