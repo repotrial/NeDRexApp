@@ -205,6 +205,7 @@ public class ImportTask extends AbstractTask {
                         System.out.println("The build was successful!!!");
                         logger.info("The build was successful!");
                         String urlp = "";
+                        networkName = networkName.replaceAll("\\W+", "");
                         if (!networkName.equals("")) {
                             urlp = this.nedrexService.API_LINK + "graph/download/" + uid + "/" + networkName + ".graphml";
 
@@ -213,7 +214,17 @@ public class ImportTask extends AbstractTask {
                         }
 
                         DialogTaskManager taskmanager = app.getActivator().getService(DialogTaskManager.class);
-                        File file = File.createTempFile("nedrex", ".graphml");
+                        File file;
+                        try {
+                            String tempDir = System.getProperty("java.io.tmpdir");
+                            file = new File(tempDir,networkName+".graphml");
+                            if (!file.createNewFile()){
+                                file = File.createTempFile("nedrex", ".graphml");
+                            }
+                        }
+                        catch (Exception e) {
+                            file = File.createTempFile("nedrex", ".graphml");
+                        }
                         System.out.println(file.getAbsolutePath());
                         taskmanager.execute(new TaskIterator(new DownloadNetworkTask(app, urlp, file, nedrexService), new ImportNetworkTask(app, file)));
                         break;
