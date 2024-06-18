@@ -210,6 +210,7 @@ public class ImportTask extends AbstractTask {
                             urlp = this.nedrexService.API_LINK + "graph/download/" + uid + "/" + networkName + ".graphml";
 
                         } else {
+                            networkName = uid;
                             urlp = this.nedrexService.API_LINK + "graph/download/" + uid + ".graphml";
                         }
 
@@ -217,12 +218,11 @@ public class ImportTask extends AbstractTask {
                         File file;
                         try {
                             String tempDir = System.getProperty("java.io.tmpdir");
-                            file = new File(tempDir,networkName+".graphml");
-                            if (!file.createNewFile()){
+                            file = new File(tempDir, networkName + ".graphml");
+                            if (!file.createNewFile()) {
                                 file = File.createTempFile("nedrex", ".graphml");
                             }
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                             file = File.createTempFile("nedrex", ".graphml");
                         }
                         System.out.println(file.getAbsolutePath());

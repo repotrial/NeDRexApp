@@ -136,14 +136,10 @@ public class BiConTask extends AbstractTask{
 			newNetName = namingUtil.getSuggestedNetworkTitle(new_net_name);
 		}
 		
-		//String submiturl = "https://api.repotrial.net/bicon/submit";
-//		String submiturl = String.format("https://api.repotrial.net/bicon/submit?lg_min=%s&lg_max=%s", lgMin.getValue(), lgMax.getValue());
 		String submiturl = String.format(this.nedrexService.API_LINK + "bicon/submit?lg_min=%s&lg_max=%s", lgMin.getValue(), lgMax.getValue());
 		
 		logger.info("This is the submitURL: " + submiturl);
-//		String statusurl = "https://api.repotrial.net/bicon/status";
 		String statusurl = this.nedrexService.API_LINK + "bicon/status";
-//		String clustermapurl = "https://api.repotrial.net/bicon/clustermap";
 		String clustermapurl = this.nedrexService.API_LINK + "bicon/clustermap";
 		
 		HttpPost post = new HttpPost(submiturl);
@@ -152,21 +148,12 @@ public class BiConTask extends AbstractTask{
 		reqEntity.addPart("expression_file", fbody);
 		int sleep_time = 5; //in seconds
 		
-		//String lgmin = lgMin.getValue().toString();
-		//reqEntity.addPart("lg_min", new StringBody(lgmin));
 
-		/*HttpEntity reqEntity = MultipartEntityBuilder.create()
-                .addPart("file", new FileBody(inputFile))
-                .build();*/
-		
 
-		//post.setEntity(new StringEntity(payload.toString(), ContentType.APPLICATION_JSON));
 		post.setEntity(reqEntity);
 		logger.info("The request entity: " + reqEntity);
-//		logger.info("The executing request: " + post.getRequestLine());
 		logger.info("The original request URI: " + post.getURI());
-//		logger.info("The effective parameters for this post: " + post.getParams());
-		
+
 		
 		String uidd = new String();
 		Boolean failedSubmit = false;
