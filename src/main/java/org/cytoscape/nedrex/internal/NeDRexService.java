@@ -28,7 +28,7 @@ import java.net.HttpURLConnection;
 public class NeDRexService {
 
     public static final String TUTORIAL_LINK = "https://nedrex.net/tutorial/";
-    public static final String API_LINK = "https://prototypes.cosy.bio/licensed/";
+    public static final String API_LINK = "https://apps.cosy.bio/licensed/";
 
     public CloseableHttpClient API_client;
     public static final String NEDREX_LINK = "https://nedrex.net";

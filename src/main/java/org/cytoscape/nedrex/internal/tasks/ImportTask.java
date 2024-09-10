@@ -143,6 +143,7 @@ public class ImportTask extends AbstractTask {
             payload.put("nodes", nodes);
             payload.put("edges", edges);
             logger.info("The post JSON converted to string: " + payload.toString());
+            System.out.println("The post JSON converted to string: " + payload.toString());
 
             HttpPost post = new HttpPost(this.nedrexService.API_LINK + "graph/builder");
 
@@ -161,6 +162,7 @@ public class ImportTask extends AbstractTask {
                 logger.info("Response entity: ");
                 while ((line = rd.readLine()) != null) {
                     logger.info("The uri of the response to the post: " + line + "\n");
+                    System.out.println(line);
                     uuid = line;
                 }
                 System.out.println("UUID:" + uuid);
