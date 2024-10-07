@@ -12,7 +12,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.cytoscape.nedrex</groupId>
     <artifactId>NeDRex</artifactId>
-    <version>2.1.0-rc4</version>
+    <version>2.1.0-rc5</version>
     <name>NeDRex</name>
     <packaging>bundle</packaging>
 

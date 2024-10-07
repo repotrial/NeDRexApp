@@ -45,17 +45,17 @@ public class MuSTAPI {
 	Map<String, Integer> nodeParticipationMap = new HashMap <String, Integer>();
 	Map<List<String>, Integer> edgeParticipationMap = new HashMap <List<String>, Integer>();
 	Boolean Success;
-	
+	private NeDRexService nedrexService;
 	public MuSTAPI(NeDRexService nedrexService, CyNetwork network, Set<CyNode> seeds, Integer treeNumber, Integer iterNumber) throws URISyntaxException, ParseException {
 		this.network = network;
 		this.seeds = seeds;
 		this.treeNumber = treeNumber;
 		this.iterNumber = iterNumber;
-		
+		this.nedrexService = nedrexService;
 		runAlgorithm();
 	}
 
-	private NeDRexService nedrexService;
+
 
 	private void runAlgorithm() throws URISyntaxException, ParseException {
 				
