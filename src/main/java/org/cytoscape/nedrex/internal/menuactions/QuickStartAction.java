@@ -37,6 +37,7 @@ public class QuickStartAction extends AbstractCyAction{
 		setPreferredMenu("Apps.NeDRex");
 		setMenuGravity(0.9f);
 		this.app = app;
+		this.setNedrexService(app.getNedrexService());
 		String message = "<html><body>" +
 				"To quickly find potential repurposable drugs for the selected diseases in the network<br>" +
 				"with one click, Quick Start performs all main steps of the drug repurposing workflow: <br>" +
